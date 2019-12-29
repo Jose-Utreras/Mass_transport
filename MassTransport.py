@@ -1,3 +1,4 @@
+import sys
 import yt
 from yt.funcs import mylog
 mylog.setLevel(50)
@@ -13,6 +14,7 @@ from yt.fields.derived_field import \
     ValidateSpatial, \
     NeedsParameter
 
+from astropy.table import Table , Column
 
 def _Disk_H(field, data):
     center = data.get_field_parameter('center')
@@ -69,7 +71,9 @@ def XY_map_N(N):
     Y=np.reshape(Y,(N,N))-(N-1)/2.0
     return X,Y
 
-ds=yt.load('Sims/G1E1_new_0015/G-0015')
+cmdarg=sys.argv
+name=cmdarg[-1]
+ds=yt.load('../Sims/'+name+'/G-'+name[-4:])
 
 ##########  Creating disk and surface #############
 """
@@ -139,7 +143,6 @@ for ijk,radius in enumerate(Radius):
     while True:
         try:
             if (i0==i_list[0])and(j0==j_list[0]):
-                print('LOOP')
                 break
         except:
             pass
@@ -226,4 +229,7 @@ for ijk,radius in enumerate(Radius):
     flow.convert_to_units('Msun/yr')
     Inflow[ijk]=flow.sum()
 
-plt.plot(radio,Inflow)
+tabla = Table()
+tabla['Radius']=Column(Radius,unit='pc')
+tabla['Mdot']=Column(Inflow,unit='msun/yr')
+tabla.write('Tables/'+name+'_mdot',path='data',format='hdf5',serialize_meta=True,overwrite=True)
