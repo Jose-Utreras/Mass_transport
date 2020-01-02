@@ -129,7 +129,7 @@ sigma=frbs['density'].in_units('Msun/pc**2')
 R_map=radial_map_N(NN)*L/NN
 x,y = XY_map_N(NN)*L/NN
 
-Radius = np.linspace(0,16e3,40)[1:]*pc
+Radius = np.linspace(0,16e3,65)[1:]*pc
 Inflow = np.zeros_like(Radius)
 
 for ijk,radius in enumerate(Radius):
