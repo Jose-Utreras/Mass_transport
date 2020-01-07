@@ -63,7 +63,10 @@ yt.add_field("Disk_Angle",
              validators=[ValidateParameter('center')])
 yt.add_field("vertical_velocity",
         function=_vertical_velocity,take_log=False, units=r"km/s",validators=[ValidateParameter('bulk_velocity')])
-
+def add_extremes(X):
+    X=np.insert(X,0,0)
+    X=np.insert(X,len(X),2*X[-1]-X[-2])
+    return X
 def analytic_model(radius,vel_cir,rbin):
     Redges=np.arange(0*pc,35000*pc,rbin*pc)
     Rcen=0.5*(Redges[1:]+Redges[0:-1])
