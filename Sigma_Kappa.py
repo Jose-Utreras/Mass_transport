@@ -63,6 +63,32 @@ yt.add_field("Disk_Angle",
              validators=[ValidateParameter('center')])
 yt.add_field("vertical_velocity",
         function=_vertical_velocity,take_log=False, units=r"km/s",validators=[ValidateParameter('bulk_velocity')])
+
+def Smooth(x,y,n=1,b=1):
+        NN=len(y[:])
+        z=np.zeros(NN)
+        d=np.zeros(NN)
+        X=np.zeros(NN+2*n)
+        Y=np.zeros(NN+2*n)
+
+
+        for i in range(n):
+                X[n-i-1]=x[0]-(i+1)*(x[1]-x[0])
+                Y[n-i-1]=y[0]
+        for i in np.arange(NN,NN+2*n,1):
+                X[i]=x[NN-1]+(i+1-NN)*(x[1]-x[0])
+                Y[i]=y[NN-1]
+        count = n
+        for xa,xb in zip(x,y):
+                X[count]=xa
+                Y[count]=xb
+                count+=1
+        for i in range(len(x)):
+                for j in range(2*n+1):
+                        z[i]=z[i]+np.exp( -(X[i+n]-X[i+j])**2 /(2*b**2) )*Y[i+j]
+                        d[i]=d[i]+np.exp( -(X[i+n]-X[i+j])**2 /(2*b**2) )
+
+        return z/d
 def Velocity_curve(R,Vo,R1,R2):
     return Vo*np.arctan(R/R1)*np.exp(-R/R2)
 def add_extremes(X):
