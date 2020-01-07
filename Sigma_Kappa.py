@@ -63,6 +63,8 @@ yt.add_field("Disk_Angle",
              validators=[ValidateParameter('center')])
 yt.add_field("vertical_velocity",
         function=_vertical_velocity,take_log=False, units=r"km/s",validators=[ValidateParameter('bulk_velocity')])
+def Velocity_curve(R,Vo,R1,R2):
+    return Vo*np.arctan(R/R1)*np.exp(-R/R2)
 def add_extremes(X):
     X=np.insert(X,0,0)
     X=np.insert(X,len(X),2*X[-1]-X[-2])
